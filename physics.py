@@ -191,3 +191,4 @@ class Ch2Kinematics:
 # Acceleration 
 # XDelta
 print(Ch2Kinematics(Time=1.21,Acceleration=-9.792).solve()) # Uses equation 3 
+# Change params with information you're given
