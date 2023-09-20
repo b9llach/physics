@@ -1,3 +1,4 @@
+## For physics1.tns file:
 * Go to https://education.ti.com/en/software/details/en/CA9C74CAD02440A69FDC7189D7E1B6C2/swticonnectcesoftware
 * Download whichever version suits you (windows, mac, etc.)
 * Select free 30 days for free once the install is done
