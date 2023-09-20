@@ -1,5 +1,12 @@
 from __future__ import annotations
 import math
+import re
+
+# Go to https://www.online-python.com/
+# Delete all of the code you see
+# Paste all the code in here into there
+# Click the green play button that says run
+
 
 class Ch1Vector:
     Mag: float = None
@@ -10,7 +17,7 @@ class Ch1Vector:
     Axis: str = None
     Name: str = None
 
-    def __init__(self,Name: str, Mag:float=None,Angle: float = None,Ax: float = None,Ay: float = None,Quadrant: int = None,Axis: str = 'x') -> None:
+    def __init__(self,Name: str="A", Mag:float=None,Angle: float = None,Ax: float = None,Ay: float = None,Quadrant: int = None,Axis: str = 'x') -> None:
         self.Mag = Mag 
         self.Angle = Angle 
         self.Ax = Ax 
@@ -21,6 +28,7 @@ class Ch1Vector:
 
     def auto_fill(self):
         if self.Ax is None or self.Ay is None:
+            print("calcing Ax Ay")
             self.calculate_ax_ay()
         
         if self.Ax is not None and self.Ay is not None:
@@ -32,21 +40,24 @@ class Ch1Vector:
         return self
 
     def calculate_ax_ay(self):
-        if self.Mag is not None and self.Angle is not None and self.Quadrant is not None and self.Axis is not None:
+        if self.Mag is not None and self.Angle is not None:
             Ax = math.cos(math.radians(self.Angle)) * self.Mag
             Ay = math.sin(math.radians(self.Angle)) * self.Mag
             if self.Quadrant == 1:
                 self.Ax = Ax if self.Axis == 'x' else Ay
                 self.Ay = Ay if self.Axis == 'x' else Ax
-            if self.Quadrant == 2:
+            elif self.Quadrant == 2:
                 self.Ax = -Ax if self.Axis == 'x' else Ay
                 self.Ay = Ay if self.Axis == 'x' else -Ax
-            if self.Quadrant == 3:
+            elif self.Quadrant == 3:
                 self.Ax = -Ax if self.Axis == 'x' else -Ay
                 self.Ay = -Ay if self.Axis == 'x' else -Ax
-            if self.Quadrant == 4:
+            elif self.Quadrant == 4:
                 self.Ax = Ax if self.Axis == 'x' else -Ay
                 self.Ay = -Ay if self.Axis == 'x' else Ax
+            else:
+                self.Ax = Ax
+                self.Ay = Ay
 
         return self
     
@@ -96,8 +107,9 @@ class Ch2Kinematics:
     Y_axis: str
     Acceleration: float
     XDelta: float
+    SolveFor: str
 
-    def __init__(self, X:float=None, XDelta:float=None, Distance:float=None,Acceleration:float=None,Vi:float=0,Xi:float=0,Speed:float=None,Displacement:float=None,Time:float=None,VFinal:float=None,Y_axis:str='x') -> None:
+    def __init__(self, SolveFor:str=None,X:float=None, XDelta:float=None, Distance:float=None,Acceleration:float=None,Vi:float=0,Xi:float=0,Speed:float=None,Displacement:float=None,Time:float=None,VFinal:float=None,Y_axis:str='x') -> None:
         self.Displacement = Displacement
         self.Distance = Distance
         self.Speed = Speed
@@ -109,6 +121,13 @@ class Ch2Kinematics:
         self.X = X
         self.Acceleration = Acceleration
         self.XDelta = XDelta
+        self.SolveFor = SolveFor
+
+    def set_attribute(self, attribute_name, value):
+        self.attributes[attribute_name] = value
+
+    def get_attribute(self, attribute_name):
+        return self.attributes.get(attribute_name)
 
     def calculate_speed(self) -> Ch2Kinematics:
         self.Speed = self.Distance / self.Time
@@ -128,13 +147,24 @@ class Ch2Kinematics:
             y2: float | int
         """
         return (x2-x1) / (y2-y1)
+    
+
+    def solve_for(self) -> float | int:
+        if self.SolveFor is None:
+            return None
+        if self.SolveFor == 'xdelta':
+            pass
+
 
     def first_equation(self) -> float | int:
         """
         Requires Xi, Vi, VFinal, Time
         """
+
         print("Using Equation #1")
         return self.Xi + (.5*(self.Vi + self.VFinal)) * self.Time
+
+
 
     def second_equation(self) -> float | int:
         """
@@ -143,12 +173,16 @@ class Ch2Kinematics:
         print("Using Equation #2")
         return self.Vi + (self.Acceleration * self.Time)
 
+
+
     def third_equation(self) -> float | int:
         """
         Requires Xi, Vi, Time, Acceleration
         """
         print("Using Equation #3")
         return self.Xi + self.Vi * self.Time + (.5 * self.Acceleration) * self.Time**2
+
+
 
     def fourth_equation(self) -> float | int:
         """
@@ -157,21 +191,24 @@ class Ch2Kinematics:
         print("Using Equation #4")
         return math.sqrt((2*self.XDelta)/self.Acceleration)
 
+
+
     def solve(self) -> float | int:
         """
         Uses provided information to solve problem
         """
+        if self.Xi is not None and self.Vi is not None and self.VFinal is not None and self.Time is not None:
+            return self.first_equation()
+        
+        if self.Vi is not None and self.Acceleration is not None and self.Time is not None and self.Xi is None:
+            return self.second_equation()
+        
+        if self.Acceleration is not None and self.Xi is not None and self.Vi is not None and self.Time is not None:
+            return self.third_equation()
+        
         if self.Time is None and self.XDelta is not None and self.Acceleration is not None:
             return self.fourth_equation()
         
-        elif self.Xi is None and self.Vi is not None and self.VFinal is not None and self.Time is not None:
-            return self.first_equation()
-        
-        elif self.X is None and self.Acceleration is not None and self.Xi is not None and self.Vi is not None and self.Time is not None:
-            return self.third_equation()
-        
-        elif self.Vi is not None and self.Acceleration is not None and self.Time is not None:
-            return self.second_equation()
         else:
             print("Insufficient amount of information")
             return None
@@ -190,5 +227,103 @@ class Ch2Kinematics:
 # X
 # Acceleration 
 # XDelta
-print(Ch2Kinematics(Time=1.21,Acceleration=-9.792).solve()) # Uses equation 3 
-# Change params with information you're given
+
+# Xi=3,Vi=5,VFinal=4,Time=5                 1st equation
+# Vi=0,Time=3,Acceleration=-9.792           2nd equation
+# Xi=3,Vi=0,Time=0,Acceleration=9.792       3rd equation
+# Acceleration=-9.8,XDelta=-8.75            4th equation
+
+x = Ch1Vector(Name="A",Angle=5,Mag=10).auto_fill()
+print(x)
+def cls():
+    os.system('cls' if os.name == 'nt' else 'clear')
+def convert(var, t):
+    try:
+        return t(var)
+    except:
+        return None
+def wait_for_keypress():
+    if os.name == 'posix':
+        # Unix/Linux/macOS
+        os.system('read -n 1 -s -p "Press any key to continue..."')
+    elif os.name == 'nt':
+        # Windows
+        os.system('pause')
+    else:
+        print("Unsupported operating system")
+        
+import os
+import time
+vectors = {}
+names = ["Displacement", "Distance", "Speed", "Time", "VFinal", "Y_axis", "Xi", "Vi", "X", "Acceleration", "XDelta"]
+ch2 = Ch2Kinematics()
+while True:
+    cls()
+    x = input("Chapters\n[1] Vectors\n[2] 1D Kinematics\n> ")
+    if x == '1':
+        cls()
+        op = input("[1] Make new vector\n[2] Perform math on 2 vectors\n[3] Print vectors to screen\n> ")
+        if '1' in op:
+            cls()
+            print("If you don't have a value for a variable, just hit enter\nIt will autofill for you once it is made!\n---------------")
+            name = convert(input("Vector Name: "),str)
+            vectors[name] = Ch1Vector(Name=name)
+            vectors[name].Angle = convert(input("Angle: "),float)
+            vectors[name].Mag = convert(input("Magnitude: "),float)
+            vectors[name].Ax = convert(input("Ax: "),float)
+            vectors[name].Ay = convert(input("Ay: "),float)
+            vectors[name].Axis = convert(input("Axis: "),str)
+            vectors[name].Quadrant = convert(input("Quadrant: "),int)
+            vectors[name].auto_fill()
+            cls()
+            print(vectors[name])
+            print("Vector made!")
+            wait_for_keypress()
+        if '2' in op:
+            cls()
+            sign = ''
+            new_name = input("Name for vector after operation\n> ")
+            operation = input("Example: A+B shows Vector A + Vector B\nExample: A*B shows Vector A * Vector B, etc.\nEnter operation\n> ").replace(" ",'')
+            if '+' in operation:
+                new = operation.split('+')
+                sign = '+'
+            if '-' in operation:
+                new = operation.split('-')
+                sign = '-'
+            if '*' in operation:
+                new = operation.split('*')
+                sign = '*'
+            if '/' in operation:
+                new = operation.split('/')
+                sign = '/'
+            new_str = ''
+            c = 0
+            for i in new:
+                new_str = new_str + f"vectors['{i}']"
+                if c == 0:
+                    new_str += sign
+                    c+=1
+            vectors[new_name] = eval(new_str)
+            vectors[new_name].Name = new_name
+            print(vectors[new_name])
+            wait_for_keypress()
+        if '3' in op:
+            cls()
+            for i in vectors.keys():
+                print(vectors[i])
+            wait_for_keypress()
+        
+    elif x == '2':
+        cls()
+        print("If you don't have a value for a variable, just hit enter\n\
+It will auto solve for you, doesn't work if you don't meet all required variables\n---------------")
+        ch2.Acceleration = convert(input("Acceleration: "),float)
+        ch2.Xi = convert(input("Xi: "),float)
+        ch2.Vi = convert(input("Vi: "),float)
+        ch2.VFinal = convert(input("VFinal: "),float)
+        ch2.Time = convert(input("Time: "),float)
+        ch2.Speed = convert(input("Speed: "),float)
+        ch2.XDelta = convert(input("XDelta: "),float)
+        cls()
+        print(ch2.solve())
+        wait_for_keypress()
