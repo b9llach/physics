@@ -5,3 +5,9 @@
 * Once you open it, on the left hand side in that little window, click on the yellow folder
 * Now plug your calculator into your computer via USB to USB A cable
 * Now drag and drop the file into that bottom left section, where your 'Look in:' should be the name of your calculator
+
+## For physics.py file:
+* Go to https://www.online-python.com/
+* Delete all of the code you see
+* Paste all the code in here into there
+* Click the green play button that says run
