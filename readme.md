@@ -10,5 +10,5 @@
 ## For physics.py file:
 * Go to https://www.online-python.com/
 * Delete all of the code you see
-* Paste all the code in here into there
+* Paste all the code from here into where you just deleted it: https://raw.githubusercontent.com/b9llach/physics/main/physics.py
 * Click the green play button that says run
