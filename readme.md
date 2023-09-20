@@ -8,7 +8,7 @@
 * Now drag and drop the file into that bottom left section, where your 'Look in:' should be the name of your calculator
 
 ## For physics.py file:
-* Go to https://www.online-python.com/](https://www.onlinegdb.com/online_python_compiler
+* Go to https://www.onlinegdb.com/online_python_compiler
 * Delete all of the code you see
 * Paste all the code from here into where you just deleted it: https://raw.githubusercontent.com/b9llach/physics/main/physics.py
 * Click the green play button that says run
