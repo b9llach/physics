@@ -213,7 +213,36 @@ class Ch2Kinematics:
             print("Insufficient amount of information")
             return None
 
-
+class Ch3Kinematics2d():
+    # still working on
+    Vx: float
+    Vix: float
+    Vy: float
+    Viy: float
+    Time: float
+    Ax: float
+    Ay: float
+    XDelta: float
+    YDelta: float
+    def __init__(self, Vx: float=None, Vix: float=None, Vy:float=None, Viy: float=None, Time:float=None, Ax: float=None, Ay:float=None,XDelta:float=None, YDelta:float=None) -> None:
+        self.Vx = Vx
+        self.Vy = Vy
+        self.Vix = Vix
+        self.Viy = Viy
+        self.Time = Time
+        self.Ax = Ax
+        self.Ay = Ay
+        self.XDelta = XDelta
+        self.YDelta = YDelta
+        
+    def solve(self, axis: str='x'):
+        if axis.lower() == 'x':
+            ch2 = Ch2Kinematics(VFinal=self.Vx, Vi=self.Vix, Time=self.Time, Acceleration=self.Ax, XDelta=self.XDelta)
+            ch2.solve()
+        elif axis.lower() == 'y':
+            ch2 = Ch2Kinematics(VFinal=self.Vy, Vi=self.Viy, Time=self.Time, Acceleration=self.Ay, XDelta=self.YDelta)
+            ch2.solve()
+        
 
 # Params you can pass in: 
 # Displacement 
@@ -233,8 +262,6 @@ class Ch2Kinematics:
 # Xi=3,Vi=0,Time=0,Acceleration=9.792       3rd equation
 # Acceleration=-9.8,XDelta=-8.75            4th equation
 
-x = Ch1Vector(Name="A",Angle=5,Mag=10).auto_fill()
-print(x)
 def cls():
     os.system('cls' if os.name == 'nt' else 'clear')
 def convert(var, t):
@@ -242,15 +269,8 @@ def convert(var, t):
         return t(var)
     except:
         return None
-def wait_for_keypress():
-    if os.name == 'posix':
-        # Unix/Linux/macOS
-        os.system('read -n 1 -s -p "Press any key to continue..."')
-    elif os.name == 'nt':
-        # Windows
-        os.system('pause')
-    else:
-        print("Unsupported operating system")
+def wait_for_keypress(p="Press any key to continue... "):
+    input(p)
         
 import os
 import time
@@ -259,7 +279,7 @@ names = ["Displacement", "Distance", "Speed", "Time", "VFinal", "Y_axis", "Xi", 
 ch2 = Ch2Kinematics()
 while True:
     cls()
-    x = input("Chapters\n[1] Vectors\n[2] 1D Kinematics\n> ")
+    x = input("Chapters\n[1] Vectors\n[2] 1D Kinematics\n[3] 2D Kinematics\n> ")
     if x == '1':
         cls()
         op = input("[1] Make new vector\n[2] Perform math on 2 vectors\n[3] Print vectors to screen\n> ")
