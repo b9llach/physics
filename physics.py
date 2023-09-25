@@ -214,7 +214,6 @@ class Ch2Kinematics:
             return None
 
 class Ch3Kinematics2d():
-    # still working on
     Vx: float
     Vix: float
     Vy: float
@@ -269,81 +268,157 @@ def convert(var, t):
         return t(var)
     except:
         return None
-def wait_for_keypress(p="Press any key to continue... "):
+def wait_for_keypress(p="Press enter to continue... "):
+    # awesome
     input(p)
+    
+def has_math(s:str):
+    if '+' in s:
+        return True, '+'
+    if '-' in s:
+        return True, '-'
+    if '**' in s:
+        return True, '**'
+    if '*' in s:
+        return True, '*'
+    if '/' in s:
+        return True, '/'
+    return False, -1
         
 import os
 import time
+variables = {}
 vectors = {}
 names = ["Displacement", "Distance", "Speed", "Time", "VFinal", "Y_axis", "Xi", "Vi", "X", "Acceleration", "XDelta"]
 ch2 = Ch2Kinematics()
 while True:
-    cls()
-    x = input("Chapters\n[1] Vectors\n[2] 1D Kinematics\n[3] 2D Kinematics\n> ")
-    if x == '1':
+    try:
         cls()
-        op = input("[1] Make new vector\n[2] Perform math on 2 vectors\n[3] Print vectors to screen\n> ")
-        if '1' in op:
+        x = input("(type help for more commands)\nChapters\n[1] Vectors\n[2] 1D Kinematics\n[3] 2D Kinematics\n> ")
+        if x == '1':
             cls()
-            print("If you don't have a value for a variable, just hit enter\nIt will autofill for you once it is made!\n---------------")
-            name = convert(input("Vector Name: "),str)
-            vectors[name] = Ch1Vector(Name=name)
-            vectors[name].Angle = convert(input("Angle: "),float)
-            vectors[name].Mag = convert(input("Magnitude: "),float)
-            vectors[name].Ax = convert(input("Ax: "),float)
-            vectors[name].Ay = convert(input("Ay: "),float)
-            vectors[name].Axis = convert(input("Axis: "),str)
-            vectors[name].Quadrant = convert(input("Quadrant: "),int)
-            vectors[name].auto_fill()
+            op = input("[1] Make new vector\n[2] Perform math on 2 vectors\n[3] Print vectors to screen\n> ")
+            if '1' in op:
+                cls()
+                print("If you don't have a value for a variable, just hit enter\nIt will autofill for you once it is made!\n---------------")
+                name = convert(input("Vector Name: "),str)
+                vectors[name] = Ch1Vector(Name=name)
+                vectors[name].Angle = convert(input("Angle: "),float)
+                vectors[name].Mag = convert(input("Magnitude: "),float)
+                vectors[name].Ax = convert(input("Ax: "),float)
+                vectors[name].Ay = convert(input("Ay: "),float)
+                vectors[name].Axis = convert(input("Axis: "),str)
+                vectors[name].Quadrant = convert(input("Quadrant: "),int)
+                vectors[name].auto_fill()
+                cls()
+                print(vectors[name])
+                print("Vector made!")
+                wait_for_keypress()
+            if '2' in op:
+                cls()
+                sign = ''
+                new_name = input("Name for vector after operation\n> ")
+                operation = input("Example: A+B shows Vector A + Vector B\nExample: A*B shows Vector A * Vector B, etc.\nEnter operation\n> ").replace(" ",'')
+                if '+' in operation:
+                    new = operation.split('+')
+                    sign = '+'
+                if '-' in operation:
+                    new = operation.split('-')
+                    sign = '-'
+                if '*' in operation:
+                    new = operation.split('*')
+                    sign = '*'
+                if '/' in operation:
+                    new = operation.split('/')
+                    sign = '/'
+                new_str = ''
+                c = 0
+                for i in new:
+                    new_str = new_str + f"vectors['{i}']"
+                    if c == 0:
+                        new_str += sign
+                        c+=1
+                vectors[new_name] = eval(new_str)
+                vectors[new_name].Name = new_name
+                variables[new_name] = vectors[new_name]
+                print(vectors[new_name])
+                wait_for_keypress()
+            if '3' in op:
+                cls()
+                for i in vectors.keys():
+                    print(vectors[i])
+                wait_for_keypress()
+            
+        elif x == '2':
             cls()
-            print(vectors[name])
-            print("Vector made!")
+            print("If you don't have a value for a variable, just hit enter\n\
+    It will auto solve for you, doesn't work if you don't meet all required variables\n---------------")
+            ch2.Acceleration = convert(input("Acceleration: "),float)
+            ch2.Xi = convert(input("Xi: "),float)
+            ch2.Vi = convert(input("Vi: "),float)
+            ch2.VFinal = convert(input("VFinal: "),float)
+            ch2.Time = convert(input("Time: "),float)
+            ch2.Speed = convert(input("Speed: "),float)
+            ch2.XDelta = convert(input("XDelta: "),float)
+            cls()
+            print(ch2.solve())
             wait_for_keypress()
-        if '2' in op:
+            
+        elif x.startswith("var("):
             cls()
-            sign = ''
-            new_name = input("Name for vector after operation\n> ")
-            operation = input("Example: A+B shows Vector A + Vector B\nExample: A*B shows Vector A * Vector B, etc.\nEnter operation\n> ").replace(" ",'')
-            if '+' in operation:
-                new = operation.split('+')
-                sign = '+'
-            if '-' in operation:
-                new = operation.split('-')
-                sign = '-'
-            if '*' in operation:
-                new = operation.split('*')
-                sign = '*'
-            if '/' in operation:
-                new = operation.split('/')
-                sign = '/'
-            new_str = ''
-            c = 0
-            for i in new:
-                new_str = new_str + f"vectors['{i}']"
-                if c == 0:
-                    new_str += sign
-                    c+=1
-            vectors[new_name] = eval(new_str)
-            vectors[new_name].Name = new_name
-            print(vectors[new_name])
+            var_name = x.split("var(")[1].split(')')[0]
+            var_type = x.split("=")[1].split('<')[1].split('>')[0]
+            var_val = x.split(var_type + ">")[1]
+            try:
+                variables[var_name] = eval(var_type+f"({var_val})")
+            except:
+                variables[var_name] = eval(var_type+f"('{var_val}')")
+            print(f"{var_name}={variables[var_name]}")
             wait_for_keypress()
-        if '3' in op:
+            
+        elif x.startswith("delvar("):
             cls()
-            for i in vectors.keys():
-                print(vectors[i])
+            var_name = x.split("var(")[1].split(')')[0]
+            if var_name in variables.keys():
+                variables.pop(var_name)
+                print(f"{var_name} was deleted")
+            else:
+                print(f"{var_name} does not exist")
+            
+        elif x.lower() == 'vars':
+            cls()
+            for i in variables.keys():
+                print(f"{i}={variables[i]}")
             wait_for_keypress()
-        
-    elif x == '2':
-        cls()
-        print("If you don't have a value for a variable, just hit enter\n\
-It will auto solve for you, doesn't work if you don't meet all required variables\n---------------")
-        ch2.Acceleration = convert(input("Acceleration: "),float)
-        ch2.Xi = convert(input("Xi: "),float)
-        ch2.Vi = convert(input("Vi: "),float)
-        ch2.VFinal = convert(input("VFinal: "),float)
-        ch2.Time = convert(input("Time: "),float)
-        ch2.Speed = convert(input("Speed: "),float)
-        ch2.XDelta = convert(input("XDelta: "),float)
-        cls()
-        print(ch2.solve())
+            
+        elif x.lower() == 'help':
+            cls()
+            print("new variable: \n   var(variable name)=<type>val\n   Exmaple: var(a)=<int>32\n   Created a variable named a, which is an integer thats value is 32\n")
+            print("vars - prints current variabls to screen\n")
+            wait_for_keypress()
+        else:
+            # really interesting way to do math without doing complex stuff, not for vectors although technically does count and can put in type
+            hm = has_math(x)
+            if hm[0] is True:
+                if ',' in x:
+                    var_name = x.split(",")[1]
+                    x = x.replace(" ","")
+                    variables[var_name] = (eval(str(variables[x.split(hm[1])[0]]) + hm[1] + str(variables[x.split(hm[1])[1].split(',')[0]])))
+                    print(f"{var_name}={variables[var_name]}")
+                    wait_for_keypress()
+                else:
+                    x = x.replace(" ","")
+                    if x.split(hm[1])[0] in variables.keys():
+                        variables[var_name] = (eval(str(variables[x.split(hm[1])[0]]) + hm[1] + str(variables[x.split(hm[1])[1].split(',')[0]])))
+                        print(f"{variables[var_name]}")
+                    else:
+                        print(eval(x))
+                    wait_for_keypress()
+            else:
+                if x in variables.keys():
+                    print(f"{x}={variables[x]}")
+                    wait_for_keypress()
+    except Exception as e:
+        print(e)
         wait_for_keypress()
+        continue
